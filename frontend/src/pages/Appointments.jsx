@@ -22,8 +22,7 @@ const Appointments = () => {
 
     const doctorInfo = doctors.find(doc => doc._id === doctorId);
     setDoctorInfo(doctorInfo);
-    console.log(doctorInfo);
-    
+    console.log(doctorInfo); 
   }
 
   const getAvailableSlots = async() => {
@@ -59,20 +58,21 @@ const Appointments = () => {
         let formattedTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'});
 
         let day = currentDate.getDate();
-        let month = currentDate.getMonth();
+        let month = currentDate.getMonth()  + 1;
         let year = currentDate.getFullYear();
 
         const slotDate = day + "_" + month + "_" + year;
         const slotTime = formattedTime;
 
-        // const isSlotAvailable = doctorInfo.slots_booked[slotDate] && doctorInfo.slots_booked[slotDate].includes(slotTime) ? false : true;
-        
+        const isSlotAvailable = doctorInfo.slots_booked[slotDate] && doctorInfo.slots_booked[slotDate].includes(slotTime) ? false : true;
 
-        // add slot to array 
-        timeSlots.push({
-          datetime: new Date(currentDate),
-          time: formattedTime
-        })
+        if (isSlotAvailable) {
+          // add slot to array 
+          timeSlots.push({
+            datetime: new Date(currentDate),
+            time: formattedTime
+          })
+        }
 
         // Increment current time by 30 minutes
         currentDate.setMinutes(currentDate.getMinutes() + 30);
@@ -86,7 +86,7 @@ const Appointments = () => {
 
   const bookAppointment = async () => {
     if (!token) {
-      toast.warn('Login to bok appointment');
+      toast.warn('Login to book appointment');
       return navigate('/login');
     }
 
@@ -116,12 +116,15 @@ const Appointments = () => {
     }
   }
   useEffect(() => {
-    fetchDoctorInfo(doctorInfo);
+    fetchDoctorInfo();
   }, [doctors, doctorId]);
 
   useEffect(() => {
-    getAvailableSlots();
+    if (doctorInfo) {
+      getAvailableSlots();
+    }
   }, [doctorInfo]);
+
 
   useEffect(() => {
     console.log(doctorSlots);
