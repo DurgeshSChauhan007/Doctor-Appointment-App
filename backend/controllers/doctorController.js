@@ -1,5 +1,5 @@
 import doctorModel from "../models/doctorModel.js";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import appointmentModel from "../models/appointmentModel.js";
 
@@ -51,15 +51,15 @@ const loginDoctor = async(req, res) => {
 
         if (isMatch) {
             const token = jwt.sign({id: doctor._id}, process.env.JWT_SECRET);
-            res.json({success: true, token});
+            return res.json({success: true, token});
         }
         else {
-            res.json({success: false, message: "Invalid Credentials"});
+            return res.json({success: false, message: "Invalid Credentials"});
         }
 
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: error.message});
+        return res.json({ success: false, message: error.message});
     }
 }
 
