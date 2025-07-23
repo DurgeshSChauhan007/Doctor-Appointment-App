@@ -26,9 +26,11 @@
     .custom-hover-bg:hover {
         background-color: var(--primary) !important;
     }
-      
 
-      
+    .hover-bg:hover {
+    background-color: var(--primary) !important;
+    }
+         
 }
 
 .active hr { 

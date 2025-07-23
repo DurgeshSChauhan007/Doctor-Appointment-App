@@ -38,6 +38,7 @@ const Navbar = () => {
                 <li className='py-1'>CONTACT</li>
                 <hr className='border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden' />
             </NavLink>
+            <NavLink to='https://doctor-appointment-app-doc-admin.vercel.app' className='px-6 py-1 border-2 rounded-full inline-block hover-bg hover:text-white '>Admin</NavLink>
         </ul>
         <div className='flex items-center gap-4'>
             {
