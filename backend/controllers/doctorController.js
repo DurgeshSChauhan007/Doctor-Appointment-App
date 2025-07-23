@@ -35,33 +35,54 @@ const doctorList = async(req, res) => {
 }
 
 // API for doctor login
-const loginDoctor = async(req, res) => {
+// controller/doctorController.js
 
+const loginDoctor = async (req, res) => {
     try {
-        
         const { email, password } = req.body;
-        
-        const doctor = await doctorModel.findOne({email});
 
+        // 1. Find the doctor
+        const doctor = await doctorModel.findOne({ email });
+
+        // 2. If doctor is not found, exit early
         if (!doctor) {
-            res.json({ success: false, message: "Invalid Credentials"});
+            return res.status(404).json({
+                success: false,
+                message: "Doctor not found with this email",
+            });
         }
 
+        // 3. Compare password
         const isMatch = await bcrypt.compare(password, doctor.password);
 
         if (!isMatch) {
-           return res.json({success: false, message: "Invalid Credentials"});
+            return res.status(400).json({
+                success: false,
+                message: "Invalid password",
+            });
         }
 
-        const token = jwt.sign({id: doctor._id}, process.env.JWT_SECRET);
-        
-        res.json({success: true, token});
+        // 4. Generate JWT token
+        const token = jwt.sign({ id: doctor._id }, process.env.JWT_SECRET, {
+            expiresIn: "1d",
+        });
+
+        // 5. Send success response
+        return res.status(200).json({
+            success: true,
+            message: "Login successful",
+            token,
+        });
 
     } catch (error) {
-        console.log(error);
-        return res.json({ success: false, message: error.message});
+        console.error("Login error:", error.message);
+        return res.status(500).json({
+            success: false,
+            message: "Server error. Please try again.",
+        });
     }
-}
+};
+
 
 // API to get doctors appointments for doctor panel
 const appointmentsDoctor = async(req, res) => {
